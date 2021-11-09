@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CSharpExamples": {
+      "commandName": "Project",
+      "commandLineArgs": "-e 2 -s 64 -b FWDU ResNet34"
+    }
+  }
+}
