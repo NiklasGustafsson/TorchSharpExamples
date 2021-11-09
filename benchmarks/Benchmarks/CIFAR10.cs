@@ -69,11 +69,9 @@ namespace CSharpExamples
                 model = ResNet.ResNet34(_numClasses, device);
                 break;
             case "resnet50":
-                _trainBatchSize /= 6;
                 model = ResNet.ResNet50(_numClasses, device);
                 break;
             case "resnet101":
-                _trainBatchSize /= 6;
                 model = ResNet.ResNet101(_numClasses, device);
                 break;
             case "resnet152":
