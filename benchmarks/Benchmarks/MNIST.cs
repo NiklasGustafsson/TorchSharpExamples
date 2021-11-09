@@ -43,16 +43,12 @@ namespace CSharpExamples
 
         private readonly static int miniBatchMultiplier = 100;
 
-        internal static void Run(int epochs, string benchmarks)
+        internal static void Run(int epochs, string benchmarks, int batchsize)
         {
             _epochs = epochs;
+            _trainBatchSize = batchsize;
 
             var device = cuda.is_available() ? CUDA : CPU;
-
-            if (device.type == DeviceType.CUDA)
-            {
-                _trainBatchSize *= 4;
-            }
 
             var data = Enumerable.Range(0, miniBatchMultiplier).Select(i => torch.rand(_trainBatchSize, 1, 28, 28, device: device)).ToList();
             var labels = Enumerable.Range(0, miniBatchMultiplier).Select(i => torch.randint(0, 10, _trainBatchSize, dtype: int64, device: device)).ToList();
@@ -130,8 +126,12 @@ namespace CSharpExamples
 
             using (var output = model.forward(data[0])) { }
 
+            model.Train();
+
             var loss = nll_loss(reduction: Reduction.Mean);
             var optimizer = optim.Adam(model.parameters());
+
+            model.Train();
 
             Console.WriteLine($"\tStart timing...");
             Stopwatch totalTime = new Stopwatch();
@@ -170,6 +170,8 @@ namespace CSharpExamples
 
             var loss = nll_loss(reduction: Reduction.Mean);
             var optimizer = optim.Adam(model.parameters());
+
+            model.Train();
 
             Console.WriteLine($"\tStart timing...");
             Stopwatch totalTime = new Stopwatch();

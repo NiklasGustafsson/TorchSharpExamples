@@ -30,7 +30,7 @@ namespace CSharpExamples
                 {
                     case "mnist":
                     case "fashion-mnist":
-                        MNIST.Run(epochs, benchmarks);
+                        MNIST.Run(epochs, benchmarks, batchSize);
                         break;
 
                     case "alexnet":

@@ -156,6 +156,8 @@ namespace CSharpExamples
             var loss = nll_loss(reduction: Reduction.Mean);
             var optimizer = optim.Adam(model.parameters());
 
+            model.Train();
+
             Console.WriteLine($"\tStart timing...");
             Stopwatch totalTime = new Stopwatch();
             totalTime.Start();
@@ -193,6 +195,8 @@ namespace CSharpExamples
 
             var loss = nll_loss(reduction: Reduction.Mean);
             var optimizer = optim.Adam(model.parameters());
+
+            model.Train();
 
             Console.WriteLine($"\tStart timing...");
             Stopwatch totalTime = new Stopwatch();
