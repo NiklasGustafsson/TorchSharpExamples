@@ -1,0 +1,19 @@
+<Project>
+  <!-- Directory.Build.props contains the common build settings for all projects in the repo. -->
+
+  <!-- Common repo directories -->
+  <PropertyGroup>
+
+    <!-- Setting TargetOS allows us to download LibTorch for Linux etc, update the SHA and update file lists under src\Redist -->
+    <!-- The only thing we can't do locally is build the C++ code for all the various target platforms (which is ultimately done on Azure Pipelines) -->
+    <TargetOS Condition="'$(TargetOS)' == '' AND '$(OS)' == 'Windows_NT'">windows</TargetOS>
+    <TargetOS Condition="'$(TargetOS)' == '' AND $([MSBuild]::IsOSPlatform('osx'))">mac</TargetOS>
+    <TargetOS Condition="'$(TargetOS)' == '' AND '$(OS)' != 'Windows_NT'">linux</TargetOS>
+
+    <TargetRuntimeID Condition="'$(TargetOS)' == 'windows'">win-x64</TargetRuntimeID>
+    <TargetRuntimeID Condition="'$(TargetOS)' == 'linux'">linux-x64</TargetRuntimeID>
+    <TargetRuntimeID Condition="'$(TargetOS)' == 'mac'">osx-x64</TargetRuntimeID>
+
+  </PropertyGroup>
+
+</Project>
