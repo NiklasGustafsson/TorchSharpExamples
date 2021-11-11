@@ -2,7 +2,7 @@
   "profiles": {
     "CSharpExamples": {
       "commandName": "Project",
-      "commandLineArgs": "-e 2 -s 64 -b FWDU ResNet34"
+      "commandLineArgs": "-e 2 -s 512-b BPU ResNet34"
     }
   }
 }

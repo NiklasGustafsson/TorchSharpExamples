@@ -144,9 +144,10 @@ namespace TorchSharp.Examples
 
             public override Tensor forward(Tensor t)
             {
-                var x = layers.forward(t);
+                using var x = layers.forward(t);
                 using var y = shortcut.forward(t);
-                return x.add_(y).relu_();
+                using var t0 = x.add_(y);
+                return t0.relu_();
             }
 
             public static int expansion = 1;
@@ -185,9 +186,10 @@ namespace TorchSharp.Examples
 
             public override Tensor forward(Tensor t)
             {
-                var x = layers.forward(t);
+                using var x = layers.forward(t);
                 using var y = shortcut.forward(t);
-                return x.add_(y).relu_();
+                using var t0 = x.add_(y);
+                return t0.relu_();
             }
 
             public static int expansion = 4;

@@ -109,7 +109,6 @@ namespace CSharpExamples
                 for (var batch = 0; batch < data.Count(); batch++)
                 {
                     using (var output = model.forward(data[batch])) { }
-                    GC.Collect();
                 }
             }
 
@@ -175,7 +174,6 @@ namespace CSharpExamples
                         output.backward();
                         optimizer.step();
                     }
-                    GC.Collect();
                 }
             }
 
