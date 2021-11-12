@@ -41,29 +41,31 @@ namespace CSharpExamples
         private static int _epochs = 4;
         private static int _trainBatchSize = 64;
 
-        private readonly static int miniBatchMultiplier = 100;
+        private static int miniBatchMultiplier = 100;
 
-        internal static void Run(int epochs, string benchmarks, int batchsize)
+        internal static void Run(int epochs, int batches, string config, int batchsize)
         {
             _epochs = epochs;
             _trainBatchSize = batchsize;
 
+            if (batches == -1) batches = miniBatchMultiplier;
+
             var device = cuda.is_available() ? CUDA : CPU;
 
-            var data = Enumerable.Range(0, miniBatchMultiplier).Select(i => torch.rand(_trainBatchSize, 1, 28, 28, device: device)).ToList();
-            var labels = Enumerable.Range(0, miniBatchMultiplier).Select(i => torch.randint(0, 10, _trainBatchSize, dtype: int64, device: device)).ToList();
+            var data = Enumerable.Range(0, batches).Select(i => torch.rand(_trainBatchSize, 1, 28, 28, device: device)).ToList();
+            var labels = Enumerable.Range(0, batches).Select(i => torch.randint(0, 10, _trainBatchSize, dtype: int64, device: device)).ToList();
 
-            if (benchmarks.Contains("FWDU")) ForwardPassWithUsings(data, device);
-            if (benchmarks.Contains("FWDNU")) ForwardPassNoUsings(data, device);
+            if (config.Contains("FWDU")) ForwardPassWithUsings(data, device);
+            if (config.Contains("FWDNU")) ForwardPassNoUsings(data, device);
 
-            if (benchmarks.Contains("BPNU")) BackpropNoUsings(data, labels, device);
-            if (benchmarks.Contains("BPU")) BackpropWithUsings(data, labels, device);
+            if (config.Contains("BPNU")) BackpropNoUsings(data, labels, device);
+            if (config.Contains("BPU")) BackpropWithUsings(data, labels, device);
         }
 
         private static void ForwardPassWithUsings(IList<Tensor> data, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning MNIST ForwardPassWithUsings with random data on {device.type.ToString()} for {_epochs}*{miniBatchMultiplier} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning MNIST ForwardPassWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             var model = new TorchSharp.Examples.MNIST.Model(device);
 
@@ -89,7 +91,7 @@ namespace CSharpExamples
         private static void ForwardPassNoUsings(IList<Tensor> data, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning MNIST ForwardPassNoUsings with random data on {device.type.ToString()} for {_epochs}*{miniBatchMultiplier} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning MNIST ForwardPassNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             var model = new TorchSharp.Examples.MNIST.Model(device);
 
@@ -118,7 +120,7 @@ namespace CSharpExamples
         private static void BackpropWithUsings(IList<Tensor> data, IList<Tensor> labels, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning MNIST BackpropWithUsings with random data on {device.type.ToString()} for {_epochs}*{miniBatchMultiplier} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning MNIST BackpropWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             var model = new TorchSharp.Examples.MNIST.Model(device);
 
@@ -159,7 +161,7 @@ namespace CSharpExamples
         private static void BackpropNoUsings(IList<Tensor> data, IList<Tensor> labels, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning MNIST BackpropNoUsings with random data on {device.type.ToString()} for {_epochs}*{miniBatchMultiplier} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning MNIST BackpropNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
             Console.WriteLine($"\tCreating the model...");
 
             var model = new TorchSharp.Examples.MNIST.Model(device);

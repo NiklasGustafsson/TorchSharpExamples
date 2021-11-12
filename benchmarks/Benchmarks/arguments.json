@@ -12,15 +12,21 @@
         "explanation": "The maximum time, measured in seconds, to use for training."
     },
     {
-        "longName": "benchmarks",
-        "shortName": "b",
+        "longName": "config",
+        "shortName": "c",
         "argType": "string",
-        "explanation": "The maximum time, measured in seconds, to use for training."
+        "explanation": "The specific configuration to run -- FWDU, FWDNU, BPNU, BPU."
+    },
+    {
+        "longName": "batches",
+        "shortName": "n",
+        "argType": "integer",
+        "explanation": "The number of batches to use."
     },
     {
         "longName": "batchsize",
         "shortName": "s",
         "argType": "integer",
-        "explanation": "The maximum time, measured in seconds, to use for training."
+        "explanation": "The batch size."
     }
 ]

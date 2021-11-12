@@ -36,10 +36,12 @@ namespace CSharpExamples
         private readonly static int miniBatchMultiplier = 100;
         private readonly static int _numClasses = 10;
 
-        internal static void Run(int epochs, string benchmarks, int batchsize, string modelName)
+        internal static void Run(int epochs, int batches, string config, int batchsize, string modelName)
         {
             _epochs = epochs;
             _trainBatchSize = batchsize;
+
+            if (batches == -1) batches = miniBatchMultiplier;
 
             var device =
                 // This worked on a GeForce RTX 2080 SUPER with 8GB, for all the available network architectures.
@@ -79,14 +81,14 @@ namespace CSharpExamples
                 break;
             }
 
-            var data = Enumerable.Range(0,miniBatchMultiplier).Select(i => torch.rand(_trainBatchSize, 3, 32, 32, device: device)).ToList();
-            var labels = Enumerable.Range(0, miniBatchMultiplier).Select(i => torch.randint(0, _numClasses, _trainBatchSize, dtype: int64, device: device)).ToList();
+            var data = Enumerable.Range(0, batches).Select(i => torch.rand(_trainBatchSize, 3, 32, 32, device: device)).ToList();
+            var labels = Enumerable.Range(0, batches).Select(i => torch.randint(0, _numClasses, _trainBatchSize, dtype: int64, device: device)).ToList();
 
-            if (benchmarks.Contains("FWDU")) ForwardPassWithUsings(model, data, modelName, device);
-            if (benchmarks.Contains("FWDNU")) ForwardPassNoUsings(model, data, modelName, device);
+            if (config.Contains("FWDU")) ForwardPassWithUsings(model, data, modelName, device);
+            if (config.Contains("FWDNU")) ForwardPassNoUsings(model, data, modelName, device);
 
-            if (benchmarks.Contains("BPNU")) BackpropNoUsings(model, data, labels, modelName, device);
-            if (benchmarks.Contains("BPU")) BackpropWithUsings(model, data, labels, modelName, device);
+            if (config.Contains("BPNU")) BackpropNoUsings(model, data, labels, modelName, device);
+            if (config.Contains("BPU")) BackpropWithUsings(model, data, labels, modelName, device);
 
             model.Dispose();
         }
@@ -94,7 +96,7 @@ namespace CSharpExamples
         private static void ForwardPassWithUsings(TorchSharp.Examples.SpecialModule model, IList<Tensor> data, string modelName, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning {modelName} ForwardPassWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count()} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning {modelName} ForwardPassWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             // Warm-up
 
@@ -119,7 +121,7 @@ namespace CSharpExamples
         private static void ForwardPassNoUsings(TorchSharp.Examples.SpecialModule model, IList<Tensor> data, string modelName, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning {modelName} ForwardPassNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count()} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning {modelName} ForwardPassNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             // Warm-up
 
@@ -146,7 +148,7 @@ namespace CSharpExamples
         private static void BackpropWithUsings(TorchSharp.Examples.SpecialModule model, IList<Tensor> data, IList<Tensor> labels, string modelName, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning {modelName} BackpropWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count()} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning {modelName} BackpropWithUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
 
             // Warm-up
 
@@ -184,7 +186,7 @@ namespace CSharpExamples
         private static void BackpropNoUsings(TorchSharp.Examples.SpecialModule model, IList<Tensor> data, IList<Tensor> labels, string modelName, Device device)
         {
             Console.WriteLine();
-            Console.WriteLine($"\tRunning {modelName} BackpropNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count()} iterations with a batch size of {_trainBatchSize}.");
+            Console.WriteLine($"\tRunning {modelName} BackpropNoUsings with random data on {device.type.ToString()} for {_epochs}*{data.Count} iterations with a batch size of {_trainBatchSize}.");
             Console.WriteLine($"\tCreating the model...");
 
             // Warm-up

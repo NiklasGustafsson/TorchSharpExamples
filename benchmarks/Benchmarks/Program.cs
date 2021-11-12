@@ -21,8 +21,9 @@ namespace CSharpExamples
             var epochs = argumentParser.TryGetValueInt("epochs", out int e) ? e : 16;
             var timeout = argumentParser.TryGetValueInt("timeout", out int t) ? t : 3600;
 
-            var benchmarks = argumentParser.TryGetValueString("benchmarks", out string b) ? b : "FWDNU|FWDU|BPNU|BPU";
+            var config = argumentParser.TryGetValueString("config", out string b) ? b : "FWDNU|FWDU|BPNU|BPU";
             var batchSize = argumentParser.TryGetValueInt("batchsize", out int bs) ? bs : 512;
+            var batches = argumentParser.TryGetValueInt("batches", out int count) ? count : -1;
 
             for (var idx = 0; idx < argumentParser.Count; idx++)
             {
@@ -30,7 +31,7 @@ namespace CSharpExamples
                 {
                     case "mnist":
                     case "fashion-mnist":
-                        MNIST.Run(epochs, benchmarks, batchSize);
+                        MNIST.Run(epochs, batches, config, batchSize);
                         break;
 
                     case "alexnet":
@@ -48,7 +49,7 @@ namespace CSharpExamples
                     case "vgg13":
                     case "vgg16":
                     case "vgg19":
-                        CIFAR10.Run(epochs, benchmarks, batchSize, argumentParser[idx]);
+                        CIFAR10.Run(epochs, batches, config, batchSize, argumentParser[idx]);
                         break;
 
                     case "text":
@@ -57,6 +58,11 @@ namespace CSharpExamples
 
                     case "seq2seq":
                         //SequenceToSequence.Run(epochs, timeout);
+                        break;
+
+                    case "adjusthue":
+                    case "rotate":
+                        VisionTransforms.Run(epochs, batches, batchSize, argumentParser[idx]);
                         break;
 
                     default:
